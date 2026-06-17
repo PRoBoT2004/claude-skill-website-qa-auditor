@@ -4,7 +4,7 @@ import { pathToFileURL } from 'node:url';
 import { crawlSite } from './lib/crawl.mjs';
 import { scoreCategory, overallScore, countBySeverity } from './lib/contract.mjs';
 import { loadCache, saveCache } from './lib/cache.mjs';
-import { buildChecklist } from './lib/checklist.mjs';
+import { buildChecklist, buildTestLog } from './lib/checklist.mjs';
 import { normalizeUrl, slugifyDomain, todayStamp, ensureDir, makeLogger, mapLimit } from './lib/util.mjs';
 import { generateReport } from './report.mjs';
 
@@ -118,11 +118,13 @@ async function main() {
 
   let categories;
   let checklist;
+  let testLog;
   const cached = await loadCache(url, config, now);
   if (cached) {
     log('cache', `HIT — reusing today's results (run with --fresh to force a new scan)`);
     categories = cached.categories;
     checklist = cached.checklist;
+    testLog = cached.testLog;
   } else {
     // ---- crawl once ----
     const crawl = await crawlSite(url, { depth: config.depth, maxPages: config.maxPages, timeout: config.timeout, log });
@@ -148,7 +150,8 @@ async function main() {
 
     categories = [...dataResults, ...browserResults];
     checklist = buildChecklist({ pages: ctx.pages, categories, origin: ctx.origin });
-    await saveCache(url, config, now, { categories, checklist, generatedAt: now.toISOString() });
+    testLog = buildTestLog({ pages: ctx.pages, categories, config });
+    await saveCache(url, config, now, { categories, checklist, testLog, generatedAt: now.toISOString() });
   }
 
   // score + order
@@ -171,7 +174,7 @@ async function main() {
     config,
   };
 
-  const html = await generateReport({ meta, overall, counts, categories, checklist });
+  const html = await generateReport({ meta, overall, counts, categories, checklist, testLog });
   const { promises: fs } = await import('node:fs');
   await fs.writeFile(outPath, html, 'utf8');
 

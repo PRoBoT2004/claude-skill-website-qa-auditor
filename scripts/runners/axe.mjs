@@ -72,17 +72,25 @@ export async function run(ctx) {
     const sev = IMPACT_SEVERITY[agg.impact] || 'MEDIUM';
     const count = agg.nodes.length;
     const samples = agg.nodes.slice(0, 3).map((n) => n.target).filter(Boolean);
+    const pageList = [...agg.pages];
     let extra = '';
     if (agg.id === 'color-contrast' && agg.nodes[0]?.summary) {
       const m = agg.nodes[0].summary.match(/contrast.*?(\d+\.?\d*):1/i);
       if (m) extra = ` Example contrast ratio: ${m[1]}:1 (AA requires 4.5:1 for normal text).`;
     }
+    // show the actual page(s) + the first element selector, in plain English
+    const where =
+      pageList.length === 1
+        ? `On ${pageList[0]}`
+        : `On ${pageList.length} pages (e.g. ${pageList.slice(0, 2).join(', ')})`;
     findings.push(
       makeFinding({
         title: `${FRIENDLY[agg.id] || agg.help} — ${count} instance${count > 1 ? 's' : ''}`,
         severity: sev,
-        location: `${samples[0] || agg.nodes[0]?.page || startUrl}${agg.pages.size > 1 ? `  (across ${agg.pages.size} pages)` : ''}`,
-        description: `${agg.description}.${extra} Affects ${count} element${count > 1 ? 's' : ''}. Impact: ${agg.impact}.`,
+        plainLocation: where,
+        location: `${samples[0] || ''}  (element selector)`,
+        pages: pageList,
+        description: `${agg.description}.${extra} Affects ${count} element${count > 1 ? 's' : ''} across ${pageList.length} page${pageList.length > 1 ? 's' : ''}. Impact: ${agg.impact}.`,
         recommendation: recommendationFor(agg.id, agg.help),
         reference: { label: `axe rule: ${agg.id}`, url: agg.helpUrl },
       })

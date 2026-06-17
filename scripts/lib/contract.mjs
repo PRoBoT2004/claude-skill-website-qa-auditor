@@ -63,6 +63,9 @@ export function makeFinding(f) {
     screenshotCaption: f.screenshotCaption || '',
     // optional plain-English "where" shown above the raw selector
     plainLocation: f.plainLocation || '',
+    // optional list of page URLs this finding was found on — rendered as
+    // "Found on: …" so the reader knows exactly which page to look at.
+    pages: f.pages || null,
   };
 }
 

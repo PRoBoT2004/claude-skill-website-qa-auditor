@@ -198,3 +198,45 @@ export function buildChecklist({ pages = [], categories = [], origin = '' }) {
   const totalItems = sections.reduce((n, s) => n + s.items.length, 0);
   return { autoChecked, sections, totalItems };
 }
+
+// A transparent "what was tested & how" log: the exact pages that were scanned
+// (with their HTTP status) and the method used for each category. So the reader
+// knows the scope and can trust / reproduce the audit.
+export function buildTestLog({ pages = [], categories = [], config = {} }) {
+  const pageRows = pages.map((p) => ({
+    url: p.finalUrl || p.url,
+    status: p.status || (p.loadError ? 'ERROR' : 0),
+    level: p.level,
+  }));
+
+  const ran = (id) => categories.find((c) => c.id === id && !c.error);
+  const METHODS = {
+    links: 'Collected every <a href> across all crawled pages, then requested each unique URL and recorded its HTTP status, following redirects and counting hops.',
+    responsive: `Loaded the home page in headless Chromium, waited out loaders/animations, then resized the viewport across ${(config.viewports || []).length || 8} widths (320–1920px), screenshotting each and measuring elements that extend past the screen edge.`,
+    browsers: 'Loaded the home page in three real engines — Chromium (Chrome/Edge), Firefox (Gecko) and WebKit (Safari) — capturing console errors and comparing rendered layout height per engine.',
+    performance: `Ran Google Lighthouse (${config.lighthouseFormFactor || 'desktop'} profile) against the home page via a headless Chrome instance, reading the Performance/Accessibility/Best-Practices/SEO scores, Core Web Vitals and resource breakdown.`,
+    accessibility: `Injected axe-core into each of up to ${config.maxA11yPages || 5} live pages and ran the WCAG 2.1 A/AA rule sets, then cross-checked the home page with Pa11y (HTML CodeSniffer) as an independent engine.`,
+    security: 'Read the HTTP response headers, opened a raw TLS socket to inspect the certificate (issuer/expiry/key), tested whether HTTP redirects to HTTPS, and scanned the HTML for mixed content, cookie flags and known-outdated library versions.',
+    seo: 'Parsed each page’s HTML (titles, meta, headings, canonical, JSON-LD) with cheerio and fetched /robots.txt, /sitemap.xml and /llms.txt to validate them.',
+    content: 'Extracted the visible text of each page and ran it through an English dictionary spell-checker (with an allow-list), plus regex scans for placeholder text, outdated years, thin content and duplicate copy.',
+    mobile: 'Loaded the home page on an emulated 375px phone and measured every interactive element’s tap-target size, the body font size and the viewport meta tag.',
+    tracking: 'Scanned the HTML for analytics tags (GA4/GTM) and third-party script sources, and aggregated the JavaScript console errors and failed network requests captured live during the crawl.',
+  };
+  const TITLES = {
+    links: '🔗 Functional & Links',
+    responsive: '📱 Responsive & Visual',
+    browsers: '🌐 Browser Compatibility',
+    performance: '⚡ Performance',
+    accessibility: '♿ Accessibility',
+    security: '🔒 Security',
+    seo: '🔍 SEO',
+    content: '✍️ Content Quality',
+    mobile: '👆 Mobile Usability',
+    tracking: '📊 Tracking & Errors',
+  };
+  const methods = Object.keys(METHODS)
+    .filter((id) => ran(id))
+    .map((id) => ({ title: TITLES[id], how: METHODS[id] }));
+
+  return { pageRows, methods };
+}

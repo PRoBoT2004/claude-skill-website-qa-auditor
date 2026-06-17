@@ -43,6 +43,16 @@ Automated tools can't submit a form, judge whether your phone number is correct,
 - Each item has a **"Pass when:"** acceptance criterion, a rough **time estimate** per section, and is **ordered fastest / highest-value first**.
 - Built entirely from data already collected — it adds **zero** time to the audit.
 
+### Interactive worksheet & sharing (v1.3)
+
+The report isn't just read-only — it's a worksheet a tester (or PM) fills in:
+
+- **Pass / Fail** each manual test case, with a **"what's wrong" note** and **screenshot upload** on failures.
+- **"Issues I found myself"** — add your own findings (which page, what activity, severity, screenshot).
+- **Every finding shows which page(s)** it was found on (`Found on: /contact, /pricing …`), so there's no guessing.
+- A **"How this was tested"** log: the exact pages scanned (with HTTP status) and the method used per category.
+- **Export** the filled report as **Word (.doc)** or a self-contained **HTML** (reopens with all marks/notes/screenshots intact), and **Share a summary on WhatsApp**. Marks & notes auto-save in the browser.
+
 ---
 
 ## Quick start

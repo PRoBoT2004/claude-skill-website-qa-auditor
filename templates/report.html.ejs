@@ -114,6 +114,66 @@
   .qaItem input:checked + .qaTxt{opacity:.5;text-decoration:line-through}
   .qaLook{font-size:12.5px;color:var(--muted)}
   .qaAuto{font-size:11.5px;color:#15803d}
+  .pagesline{font-size:12px;color:var(--muted);margin:2px 0 6px}
+  .pagesline a{color:#1d4ed8}
+  .muted{color:var(--muted)}
+  /* toolbar */
+  .qaToolbar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;background:#fff;border:1px solid var(--line);
+    border-radius:10px;padding:10px 12px;margin:6px 0 4px;position:sticky;top:8px;z-index:50;box-shadow:0 2px 8px rgba(0,0,0,.04)}
+  .qaSpacer{flex:1}
+  .qaProgress{font-size:13px;font-weight:700}
+  .qaBtn{font:600 13px inherit;padding:8px 12px;border:1px solid var(--line);background:#fff;border-radius:8px;cursor:pointer;color:var(--ink)}
+  .qaBtn:hover{background:var(--bg)}
+  .qaBtn.primary{background:#16a34a;color:#fff;border-color:#16a34a}
+  .qaBtn.primary:hover{background:#15803d}
+  .savehint{font-size:12px;color:var(--muted);margin:0 0 14px}
+  /* interactive cards */
+  .qaCard{border:1px solid var(--line);border-left:4px solid #cbd5e1;border-radius:10px;padding:12px 14px;margin:9px 0;background:#fff}
+  .qaCard[data-status="pass"]{border-left-color:#16a34a;background:#f0fdf4}
+  .qaCard[data-status="fail"]{border-left-color:#dc2626;background:#fef2f2}
+  .qaCardHead{display:flex;align-items:flex-start;gap:10px}
+  .qaDot{width:11px;height:11px;border-radius:50%;background:#cbd5e1;margin-top:4px;flex:none}
+  .qaCard[data-status="pass"] .qaDot{background:#16a34a}
+  .qaCard[data-status="fail"] .qaDot{background:#dc2626}
+  .qaCardTitle{flex:1;font-size:13.5px}
+  .qaMark{display:flex;gap:6px;flex:none}
+  .markBtn{font:600 12px inherit;padding:5px 10px;border-radius:7px;border:1px solid var(--line);background:#fff;cursor:pointer}
+  .markBtn.pass{color:#15803d}.markBtn.fail{color:#b91c1c}
+  .markBtn.pass:hover,.qaCard[data-status="pass"] .markBtn.pass{background:#16a34a;color:#fff;border-color:#16a34a}
+  .markBtn.fail:hover,.qaCard[data-status="fail"] .markBtn.fail{background:#dc2626;color:#fff;border-color:#dc2626}
+  .qaResult{font-size:12px;font-weight:800;flex:none;align-self:center}
+  .qaCard[data-status="pass"] .qaResult{color:#15803d}
+  .qaCard[data-status="fail"] .qaResult{color:#b91c1c}
+  .qaFailBox{margin-top:10px}
+  .qaNote{width:100%;font:inherit;font-size:13px;padding:8px 10px;border:1px solid var(--line);border-radius:8px;resize:vertical}
+  .qaUpRow{display:flex;align-items:center;gap:10px;margin-top:8px}
+  .upBtn{font:600 12.5px inherit;padding:6px 11px;border:1px dashed #94a3b8;border-radius:8px;cursor:pointer;color:#334155;background:#fff}
+  .upBtn:hover{background:var(--bg)}
+  .upHint{font-size:12px;color:var(--muted)}
+  .qaShots{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+  .qaShots figure{margin:0;position:relative;border:1px solid var(--line);border-radius:8px;overflow:hidden;width:150px}
+  .qaShots img{width:100%;height:100px;object-fit:cover;display:block;cursor:zoom-in}
+  .qaShots .rmShot{position:absolute;top:3px;right:3px;background:rgba(0,0,0,.6);color:#fff;border:none;border-radius:50%;width:20px;height:20px;cursor:pointer;font-size:13px;line-height:1}
+  /* own issues */
+  .ownRow{border:1px solid var(--line);border-radius:10px;padding:12px;margin:8px 0;background:#fff}
+  .ownRow .ownGrid{display:grid;grid-template-columns:1fr 1fr auto;gap:8px;margin-bottom:8px}
+  @media(max-width:640px){.ownRow .ownGrid{grid-template-columns:1fr}}
+  .ownRow input[type=text],.ownRow select,.ownRow textarea{font:inherit;font-size:13px;padding:7px 9px;border:1px solid var(--line);border-radius:8px;width:100%}
+  .ownRow textarea{resize:vertical}
+  .rmOwn{font:600 12px inherit;color:#b91c1c;background:#fff;border:1px solid var(--line);border-radius:7px;padding:5px 10px;cursor:pointer}
+  /* test log */
+  .logTable{width:100%;border-collapse:collapse;font-size:12.5px}
+  .logTable th,.logTable td{text-align:left;padding:6px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+  .logTable th{color:var(--muted);font-weight:600}
+  .logTable td a{word-break:break-all}
+  .statusPill{font-weight:700;font-size:11.5px;padding:1px 7px;border-radius:999px}
+  .statusPill.ok{background:#f0fdf4;color:#15803d}
+  .statusPill.bad{background:#fef2f2;color:#b91c1c}
+  .methodRow{display:grid;grid-template-columns:170px 1fr;gap:10px;padding:8px 0;border-bottom:1px solid var(--line);font-size:13px}
+  @media(max-width:560px){.methodRow{grid-template-columns:1fr}}
+  .methodTitle{font-weight:600}
+  .methodHow{color:#475569}
+  .baked{white-space:pre-wrap;font-size:13px;background:var(--bg);border-radius:8px;padding:8px 10px;margin-top:6px}
   /* lightbox */
   #lb{display:none;position:fixed;inset:0;background:rgba(8,12,20,.9);z-index:99999;
     align-items:center;justify-content:center;cursor:zoom-out;padding:24px}
@@ -233,6 +293,7 @@
         <div class="finding" style="border-left-color:<%= SEV_COLOR[f.severity] %>;background:<%= SEV_BG[f.severity] %>">
           <h4><span class="sev" style="background:<%= SEV_COLOR[f.severity] %>"><%= f.severity %></span> <%- esc(f.title) %></h4>
           <% if(f.plainLocation){ %><div class="loc">📍 <b><%- esc(f.plainLocation) %></b></div><% } %>
+          <% if(f.pages && f.pages.length){ %><div class="pagesline">📄 Found on: <% const pp = f.pages.slice(0,6); for(let i=0;i<pp.length;i++){ %><a href="<%- esc(pp[i]) %>" target="_blank" rel="noopener"><%- esc(pp[i].replace(/^https?:\/\/[^/]+/,'') || '/') %></a><%= i<pp.length-1?', ':'' %><% } %><% if(f.pages.length>6){ %> <span class="muted">+<%= f.pages.length-6 %> more</span><% } %></div><% } %>
           <p><%- nl2br(f.description) %></p>
           <% if(f.screenshot){ %>
           <figure class="shot">
@@ -259,38 +320,107 @@
   </section>
   <% } %>
 
-  <!-- MANUAL QA CHECKLIST -->
+  <!-- MANUAL QA CHECKLIST (interactive worksheet) -->
   <% if(checklist){ %>
   <section class="cat" id="manual-qa">
     <details open>
       <summary>
         <span class="ic">📋</span>
-        <span class="ti">Manual QA Checklist — what to test by hand</span>
+        <span class="ti">Manual QA Checklist — test by hand &amp; record results</span>
         <span class="mini"><span class="pill" style="background:#475569"><%= checklist.totalItems %> checks</span></span>
         <span class="arrow">▶</span>
       </summary>
       <div class="catbody">
-        <div class="summ">Automated tools can't submit a form, judge if your phone number is correct, or use a screen reader. Tick these off by hand — they're ordered fastest / highest-value first.</div>
+        <div class="summ">Automated tools can't submit a form, judge if your phone number is correct, or use a screen reader. Mark each test <b>Pass</b> or <b>Fail</b>, add notes &amp; screenshots on failures, then export or share the filled report. Ordered fastest / highest-value first.</div>
+
+        <!-- toolbar -->
+        <div class="qaToolbar no-export" id="qaToolbar">
+          <span class="qaProgress" id="qaProgress">Not started</span>
+          <span class="qaSpacer"></span>
+          <button type="button" class="qaBtn" id="btnSaveHtml">💾 Save filled report</button>
+          <button type="button" class="qaBtn" id="btnExportDoc">📄 Export as Word</button>
+          <button type="button" class="qaBtn primary" id="btnShareWa">📲 Share on WhatsApp</button>
+        </div>
+        <div class="savehint no-export" id="saveHint">Your marks, notes &amp; screenshots are kept in this browser automatically. Use “Save filled report” to download a copy to send or upload to Drive.</div>
 
         <% if(checklist.autoChecked && checklist.autoChecked.length){ %>
         <div class="autobox">
-          <h3>✓ Already verified for you in this report</h3>
+          <h3>✓ Already verified automatically in this report</h3>
           <ul>
             <% for(const a of checklist.autoChecked){ %><li><%- esc(a) %></li><% } %>
           </ul>
         </div>
         <% } %>
 
-        <% for(const sec of checklist.sections){ %>
+        <% let qi = 0; for(const sec of checklist.sections){ %>
         <div class="qaSec">
           <h3><%= sec.icon %> <%- esc(sec.title) %> <span class="qaTime"><%- esc(sec.time) %></span></h3>
-          <% for(const it of sec.items){ %>
-          <label class="qaItem">
-            <input type="checkbox">
-            <span class="qaTxt"><b><%- esc(it.text) %></b><br><span class="qaLook">Pass when: <%- esc(it.look) %></span><% if(it.auto){ %><br><span class="qaAuto"><%- esc(it.auto) %></span><% } %></span>
-          </label>
+          <% for(const it of sec.items){ qi++; const cid = 'qc'+qi; %>
+          <div class="qaCard" data-status="untested" data-test="<%- esc(it.text) %>" data-section="<%- esc(sec.title) %>" id="<%= cid %>">
+            <div class="qaCardHead">
+              <span class="qaDot"></span>
+              <div class="qaCardTitle"><b><%- esc(it.text) %></b><br><span class="qaLook">Pass when: <%- esc(it.look) %></span><% if(it.auto){ %><br><span class="qaAuto"><%- esc(it.auto) %></span><% } %></div>
+              <div class="qaMark no-export">
+                <button type="button" class="markBtn pass" data-mark="pass">✓ Pass</button>
+                <button type="button" class="markBtn fail" data-mark="fail">✕ Fail</button>
+              </div>
+              <span class="qaResult"></span>
+            </div>
+            <div class="qaFailBox" hidden>
+              <textarea class="qaNote" rows="2" placeholder="What's wrong? Which page & what did you do? e.g. 'Contact form on /contact — submitting shows a blank page, no success message.'"></textarea>
+              <div class="qaUpRow">
+                <label class="upBtn no-export">📷 Add screenshot<input type="file" class="qaFile no-export" accept="image/*" multiple hidden></label>
+                <span class="upHint no-export">Attach a screenshot of the problem</span>
+              </div>
+              <div class="qaShots"></div>
+            </div>
+          </div>
           <% } %>
         </div>
+        <% } %>
+
+        <!-- tester's own findings -->
+        <div class="qaSec" id="ownIssues">
+          <h3>🔍 Issues I found myself <span class="qaTime">add your own</span></h3>
+          <p class="summ" style="margin:4px 0 10px">Found something not in the list? Add it here — say which page, what you were doing, and attach a screenshot. These get included when you export / share.</p>
+          <div id="ownList"></div>
+          <button type="button" class="qaBtn no-export" id="btnAddOwn">＋ Add an issue I found</button>
+        </div>
+      </div>
+    </details>
+  </section>
+  <% } %>
+
+  <!-- HOW THIS WAS TESTED -->
+  <% if(testLog){ %>
+  <section class="cat" id="test-log">
+    <details>
+      <summary>
+        <span class="ic">🧪</span>
+        <span class="ti">How this was tested — pages scanned &amp; method</span>
+        <span class="mini"><span class="pill" style="background:#475569"><%= testLog.pageRows.length %> pages</span></span>
+        <span class="arrow">▶</span>
+      </summary>
+      <div class="catbody">
+        <div class="summ">Exactly which pages were scanned (and how each area was checked), so you can see the scope and trust the results.</div>
+
+        <h3 style="font-size:14px;margin:8px 0 6px">Pages scanned (<%= testLog.pageRows.length %>)</h3>
+        <table class="logTable">
+          <thead><tr><th>#</th><th>Page</th><th>Status</th></tr></thead>
+          <tbody>
+            <% testLog.pageRows.forEach((r,i)=>{ %>
+            <tr>
+              <td><%= i+1 %></td>
+              <td><a href="<%- esc(r.url) %>" target="_blank" rel="noopener"><%- esc(r.url) %></a></td>
+              <td><span class="statusPill <%= (r.status>=200&&r.status<400)?'ok':'bad' %>"><%= r.status || 'ERR' %></span></td>
+            </tr>
+            <% }) %>
+          </tbody>
+        </table>
+
+        <h3 style="font-size:14px;margin:18px 0 6px">How each area was checked</h3>
+        <% for(const m of testLog.methods){ %>
+        <div class="methodRow"><div class="methodTitle"><%- esc(m.title) %></div><div class="methodHow"><%- esc(m.how) %></div></div>
         <% } %>
       </div>
     </details>
@@ -323,6 +453,181 @@
     if(e.target.closest('#lb')){ lb.style.display='none'; big.src=''; }
   });
   document.addEventListener('keydown',function(e){ if(e.key==='Escape'){ lb.style.display='none'; big.src=''; } });
+})();
+</script>
+
+<script>window.__QA={domain:<%- JSON.stringify(meta.domain) %>,url:<%- JSON.stringify(meta.url) %>,score:<%= overall %>,date:<%- JSON.stringify(meta.generatedAt.slice(0,10)) %>};</script>
+<script>
+(function(){
+  var QA = window.__QA || {domain:'site',url:'',score:0,date:''};
+  var KEY = 'qa-worksheet:' + QA.url;
+
+  function $(s,r){return (r||document).querySelector(s);}
+  function $all(s,r){return [].slice.call((r||document).querySelectorAll(s));}
+
+  // ---------- pass / fail marking ----------
+  document.addEventListener('click', function(e){
+    var btn = e.target.closest('.markBtn');
+    if(btn){
+      var card = btn.closest('.qaCard');
+      var mark = btn.dataset.mark;
+      var cur = card.dataset.status;
+      var next = (cur===mark) ? 'untested' : mark;
+      card.dataset.status = next;
+      card.querySelector('.qaResult').textContent = next==='pass'?'PASS':next==='fail'?'FAIL':'';
+      card.querySelector('.qaFailBox').hidden = (next!=='fail');
+      save();
+      return;
+    }
+    var rm = e.target.closest('.rmShot');
+    if(rm){ rm.closest('figure').remove(); save(); return; }
+    var rmo = e.target.closest('.rmOwn');
+    if(rmo){ rmo.closest('.ownRow').remove(); save(); return; }
+  });
+
+  // ---------- screenshot upload (delegated) ----------
+  document.addEventListener('change', function(e){
+    var inp = e.target.closest('.qaFile, .ownFile');
+    if(!inp) return;
+    var box = inp.closest('.qaFailBox') || inp.closest('.ownRow');
+    var shots = box.querySelector('.qaShots') || box.querySelector('.ownShots');
+    var files = [].slice.call(inp.files||[]);
+    var done = 0;
+    files.forEach(function(f){
+      if(!/^image\//.test(f.type)) return;
+      var rd = new FileReader();
+      rd.onload = function(){
+        var fig = document.createElement('figure');
+        var img = document.createElement('img'); img.src = rd.result; img.setAttribute('data-zoom','');
+        var x = document.createElement('button'); x.type='button'; x.className='rmShot no-export'; x.textContent='×';
+        fig.appendChild(img); fig.appendChild(x); shots.appendChild(fig);
+        if(++done===files.length) save();
+      };
+      rd.readAsDataURL(f);
+    });
+    inp.value='';
+  });
+
+  // ---------- text edits autosave ----------
+  document.addEventListener('input', function(e){
+    if(e.target.matches('.qaNote, .ownPage, .ownActivity, .ownDesc, .ownSev')) save();
+  });
+
+  // ---------- add own issue ----------
+  function ownRow(){
+    var d = document.createElement('div'); d.className='ownRow';
+    d.innerHTML =
+      '<div class="ownGrid">'+
+        '<input type="text" class="ownPage" placeholder="Which page? e.g. /contact">'+
+        '<input type="text" class="ownActivity" placeholder="What were you doing? e.g. tapped Submit">'+
+        '<select class="ownSev"><option value="HIGH">High</option><option value="MEDIUM" selected>Medium</option><option value="LOW">Low</option></select>'+
+      '</div>'+
+      '<textarea class="ownDesc" rows="2" placeholder="What went wrong / what is the problem?"></textarea>'+
+      '<div class="qaUpRow"><label class="upBtn no-export">📷 Add screenshot<input type="file" class="ownFile no-export" accept="image/*" multiple hidden></label>'+
+        '<button type="button" class="rmOwn no-export">Remove</button></div>'+
+      '<div class="qaShots ownShots"></div>';
+    return d;
+  }
+  var addBtn = $('#btnAddOwn');
+  if(addBtn) addBtn.addEventListener('click', function(){ $('#ownList').appendChild(ownRow()); });
+
+  // ---------- progress ----------
+  function updateProgress(){
+    var cards = $all('.qaCard');
+    var pass = cards.filter(function(c){return c.dataset.status==='pass';}).length;
+    var fail = cards.filter(function(c){return c.dataset.status==='fail';}).length;
+    var todo = cards.length - pass - fail;
+    var el = $('#qaProgress');
+    if(el) el.innerHTML = '<span style="color:#15803d">'+pass+' pass</span> · <span style="color:#b91c1c">'+fail+' fail</span> · '+todo+' to test';
+  }
+
+  // ---------- localStorage autosave (marks + notes + own text; not images) ----------
+  function save(){
+    updateProgress();
+    try{
+      var state = {
+        cards: $all('.qaCard').map(function(c){return {s:c.dataset.status, n:(c.querySelector('.qaNote')||{}).value||''};}),
+        own: $all('#ownList .ownRow').map(function(r){return {
+          p:(r.querySelector('.ownPage')||{}).value||'', a:(r.querySelector('.ownActivity')||{}).value||'',
+          v:(r.querySelector('.ownSev')||{}).value||'MEDIUM', d:(r.querySelector('.ownDesc')||{}).value||''
+        };})
+      };
+      localStorage.setItem(KEY, JSON.stringify(state));
+    }catch(err){}
+  }
+  function restore(){
+    try{
+      var raw = localStorage.getItem(KEY); if(!raw){ updateProgress(); return; }
+      var st = JSON.parse(raw);
+      var cards = $all('.qaCard');
+      (st.cards||[]).forEach(function(d,i){
+        var c = cards[i]; if(!c||!d.s||d.s==='untested') return;
+        c.dataset.status=d.s;
+        c.querySelector('.qaResult').textContent = d.s==='pass'?'PASS':'FAIL';
+        c.querySelector('.qaFailBox').hidden = (d.s!=='fail');
+        if(d.n) c.querySelector('.qaNote').value = d.n;
+      });
+      (st.own||[]).forEach(function(o){
+        var r = ownRow(); $('#ownList').appendChild(r);
+        r.querySelector('.ownPage').value=o.p; r.querySelector('.ownActivity').value=o.a;
+        r.querySelector('.ownSev').value=o.v||'MEDIUM'; r.querySelector('.ownDesc').value=o.d;
+      });
+    }catch(err){}
+    updateProgress();
+  }
+
+  // ---------- export (bakes live values, downloads) ----------
+  function download(blob, name){
+    var a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name;
+    document.body.appendChild(a); a.click(); setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); }, 1500);
+  }
+  function buildHTML(asWord){
+    var liveTA = $all('textarea'), liveTX = $all('input[type=text]'), liveSEL = $all('select');
+    var clone = document.documentElement.cloneNode(true);
+    var cTA = $all('textarea', clone), cTX = $all('input[type=text]', clone), cSEL = $all('select', clone);
+    cTA.forEach(function(t,i){
+      var v = liveTA[i] ? liveTA[i].value : '';
+      if(asWord){ if(v){ var d=document.createElement('div'); d.className='baked'; d.textContent=v; t.replaceWith(d);} else { t.remove(); } }
+      else { t.textContent = v; }
+    });
+    cTX.forEach(function(inp,i){
+      var v = liveTX[i] ? liveTX[i].value : '';
+      if(asWord){ var s=document.createElement('span'); s.textContent=v?(' '+v):''; inp.replaceWith(s); }
+      else { inp.setAttribute('value', v); }
+    });
+    cSEL.forEach(function(sel,i){
+      var v = liveSEL[i] ? liveSEL[i].value : '';
+      $all('option', sel).forEach(function(o){ if(o.value===v) o.setAttribute('selected','selected'); else o.removeAttribute('selected'); });
+    });
+    if(asWord){ $all('.no-export', clone).forEach(function(e){ e.remove(); }); }
+    return '<!DOCTYPE html>\n<html lang="en">' + clone.innerHTML + '</html>';
+  }
+  var sd = $('#btnSaveHtml'); if(sd) sd.addEventListener('click', function(){
+    download(new Blob([buildHTML(false)], {type:'text/html'}), 'QA-'+QA.domain+'-'+QA.date+'-filled.html');
+  });
+  var ed = $('#btnExportDoc'); if(ed) ed.addEventListener('click', function(){
+    download(new Blob(['﻿'+buildHTML(true)], {type:'application/msword'}), 'QA-'+QA.domain+'-'+QA.date+'.doc');
+  });
+
+  // ---------- WhatsApp share ----------
+  var wa = $('#btnShareWa'); if(wa) wa.addEventListener('click', function(){
+    var cards = $all('.qaCard');
+    var pass = cards.filter(function(c){return c.dataset.status==='pass';}).length;
+    var fails = cards.filter(function(c){return c.dataset.status==='fail';}).map(function(c){
+      var n=(c.querySelector('.qaNote')||{}).value||''; return '• '+c.dataset.test+(n?(' — '+n):'');
+    });
+    var own = $all('#ownList .ownRow').map(function(r){
+      var p=(r.querySelector('.ownPage')||{}).value||'', a=(r.querySelector('.ownActivity')||{}).value||'', d=(r.querySelector('.ownDesc')||{}).value||'';
+      var s = (p?('['+p+'] '):'')+(a?(a+': '):'')+d; return s.trim()?('• '+s):'';
+    }).filter(Boolean);
+    var t = '*Website QA report — '+QA.domain+'*\n'+QA.url+'\nAuto score: '+QA.score+'/100\nManual: '+pass+' passed, '+fails.length+' failed.';
+    if(fails.length) t += '\n\n*Failed checks:*\n'+fails.join('\n');
+    if(own.length)  t += '\n\n*Issues found:*\n'+own.join('\n');
+    t += '\n\n(Full report file shared separately.)';
+    window.open('https://wa.me/?text='+encodeURIComponent(t), '_blank');
+  });
+
+  restore();
 })();
 </script>
 </body>
