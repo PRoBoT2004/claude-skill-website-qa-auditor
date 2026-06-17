@@ -20,18 +20,24 @@ export function buildChecklist({ pages = [], categories = [], origin = '' }) {
     password: has(/type=["']password["']/),
     search: has(/type=["']search["']/) || has(/name=["']s["']/) || has(/placeholder=["'][^"']*search/),
     login: has(/\b(log\s?in|sign\s?in|my account|log\s?out)\b/) || /type=["']password["']/.test(html),
+    // detect real shop INFRASTRUCTURE in TECHNICAL contexts only (asset paths,
+    // body classes, JS globals, cart links) — never marketing prose. An agency
+    // page that lists "Shopify, WooCommerce, Magento" as words it works with must
+    // NOT trigger the shop checklist. (html is already lowercased.)
     ecommerce:
-      has(/\b(add to cart|add to basket|checkout|shopping cart|view cart|buy now|product)\b/) ||
-      paths.some((p) => /(cart|checkout|shop|product|store)/.test(p)),
-    newsletter: has(/\b(subscribe|newsletter|sign up for|join our)\b/) && has(/type=["']email["']/),
+      has(/cdn\.shopify\.com|\.myshopify\.com|window\.shopify|wp-content\/plugins\/woocommerce|woocommerce-page|class=["'][^"']*(woocommerce|cart-contents|add_to_cart)|\/cart\/add|data-product-id=|snipcart|cdn\d*\.bigcommerce|\/mage\/|magento_/) ||
+      has(/href=["'][^"']*\/(cart|checkout|basket)(["'/?])/) ||
+      paths.some((p) => /\/(cart|checkout|basket)(\/|$|\?)/.test(p)),
+    newsletter: has(/\b(subscribe|newsletter)\b/) && has(/type=["']email["']/),
     mailto: has(/href=["']mailto:/),
     tel: has(/href=["']tel:/),
     cookie: has(/\bcookie\b/) && has(/\b(accept|consent|agree|preferences)\b/),
     privacy: has(/\b(privacy policy|privacy)\b/),
     terms: has(/\b(terms (of|&)|terms and conditions|terms of service)\b/),
-    video: has(/<video\b/) || has(/youtube\.com|vimeo\.com|player/),
+    video: has(/<video\b/) || has(/youtube\.com\/embed|player\.vimeo/),
     maps: has(/google\.com\/maps|maps\.googleapis|mapbox/),
-    booking: has(/\b(book (a|now)|appointment|schedule a|reserve|calendly)\b/),
+    // strong booking signals only (not a loose "schedule a ..." in marketing copy)
+    booking: has(/\b(calendly|book an appointment|make a booking|schedule an appointment|reserve a (table|seat|room)|book a (call|demo|consultation|meeting))\b/),
   };
 
   // ---- what we already auto-verified (only list categories that actually ran) ----

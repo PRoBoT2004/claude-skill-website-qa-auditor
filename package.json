@@ -1,6 +1,6 @@
 {
   "name": "website-qa-auditor",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "Take any website URL and produce one polished, self-contained HTML QA report covering 10 categories — links, responsive, cross-browser, performance, accessibility, security, SEO, content, mobile, and tracking.",
   "type": "module",
   "bin": {
