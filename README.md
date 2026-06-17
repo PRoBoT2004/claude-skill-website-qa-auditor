@@ -34,6 +34,15 @@ The point of a QA report is to *see* the problem, not decode a CSS selector. So:
 - **Loader-aware capture** — the page is settled before screenshots (intro loaders dismissed, scroll-reveal/lazy content triggered), so animation-heavy sites don't produce black frames.
 - **Plain-English location first**; the raw CSS selector is tucked into a collapsible "Technical location."
 
+### Manual QA checklist (v1.2)
+
+Automated tools can't submit a form, judge whether your phone number is correct, or use a screen reader. So the report ends with a **tickable manual checklist** of test cases a human should run by hand:
+
+- A green **"Already verified for you"** summary so the reader knows exactly what the audit *did* cover.
+- **Contextual** test cases — checkout steps only appear if the site has a shop; login tests only if it has accounts; form tests only if it has forms, etc.
+- Each item has a **"Pass when:"** acceptance criterion, a rough **time estimate** per section, and is **ordered fastest / highest-value first**.
+- Built entirely from data already collected — it adds **zero** time to the audit.
+
 ---
 
 ## Quick start

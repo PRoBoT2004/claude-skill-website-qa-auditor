@@ -99,6 +99,21 @@
   details.tech[open]>summary::before{content:'▾ ';}
   details.tech .mono{font-size:11.5px;color:var(--muted);word-break:break-all;margin-top:5px;background:var(--bg);padding:6px 8px;border-radius:6px}
   img[data-zoom]{cursor:zoom-in}
+  /* manual checklist */
+  .autobox{background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;padding:12px 16px;margin:4px 0 18px}
+  .autobox h3{font-size:13px;color:#15803d;margin-bottom:6px}
+  .autobox ul{margin:0;padding-left:18px}
+  .autobox li{font-size:13px;color:#334155;margin:3px 0}
+  .qaSec{margin:16px 0}
+  .qaSec>h3{font-size:14.5px;display:flex;align-items:center;gap:8px;margin-bottom:6px;padding-bottom:5px;border-bottom:1px solid var(--line)}
+  .qaTime{font-size:11.5px;font-weight:500;color:var(--muted);background:var(--bg);padding:2px 8px;border-radius:999px;margin-left:auto}
+  .qaItem{display:flex;gap:10px;align-items:flex-start;padding:8px 10px;border-radius:8px;cursor:pointer}
+  .qaItem:hover{background:var(--bg)}
+  .qaItem input{margin-top:3px;width:16px;height:16px;flex:none;cursor:pointer}
+  .qaTxt{font-size:13.5px}
+  .qaItem input:checked + .qaTxt{opacity:.5;text-decoration:line-through}
+  .qaLook{font-size:12.5px;color:var(--muted)}
+  .qaAuto{font-size:11.5px;color:#15803d}
   /* lightbox */
   #lb{display:none;position:fixed;inset:0;background:rgba(8,12,20,.9);z-index:99999;
     align-items:center;justify-content:center;cursor:zoom-out;padding:24px}
@@ -236,6 +251,44 @@
         <div class="allshots">
           <% for(const s of c.screenshots){ %>
           <figure><img src="<%= s.dataUri %>" alt="<%= s.label %>" data-zoom><figcaption><span><%= s.label %></span><% if(s.hasHScroll){ %><span style="color:var(--high)">⚠</span><% } %></figcaption></figure>
+          <% } %>
+        </div>
+        <% } %>
+      </div>
+    </details>
+  </section>
+  <% } %>
+
+  <!-- MANUAL QA CHECKLIST -->
+  <% if(checklist){ %>
+  <section class="cat" id="manual-qa">
+    <details open>
+      <summary>
+        <span class="ic">📋</span>
+        <span class="ti">Manual QA Checklist — what to test by hand</span>
+        <span class="mini"><span class="pill" style="background:#475569"><%= checklist.totalItems %> checks</span></span>
+        <span class="arrow">▶</span>
+      </summary>
+      <div class="catbody">
+        <div class="summ">Automated tools can't submit a form, judge if your phone number is correct, or use a screen reader. Tick these off by hand — they're ordered fastest / highest-value first.</div>
+
+        <% if(checklist.autoChecked && checklist.autoChecked.length){ %>
+        <div class="autobox">
+          <h3>✓ Already verified for you in this report</h3>
+          <ul>
+            <% for(const a of checklist.autoChecked){ %><li><%- esc(a) %></li><% } %>
+          </ul>
+        </div>
+        <% } %>
+
+        <% for(const sec of checklist.sections){ %>
+        <div class="qaSec">
+          <h3><%= sec.icon %> <%- esc(sec.title) %> <span class="qaTime"><%- esc(sec.time) %></span></h3>
+          <% for(const it of sec.items){ %>
+          <label class="qaItem">
+            <input type="checkbox">
+            <span class="qaTxt"><b><%- esc(it.text) %></b><br><span class="qaLook">Pass when: <%- esc(it.look) %></span><% if(it.auto){ %><br><span class="qaAuto"><%- esc(it.auto) %></span><% } %></span>
+          </label>
           <% } %>
         </div>
         <% } %>
