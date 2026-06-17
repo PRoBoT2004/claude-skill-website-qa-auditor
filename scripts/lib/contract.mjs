@@ -57,6 +57,12 @@ export function makeFinding(f) {
     description: f.description || '',
     recommendation: f.recommendation || '',
     reference: f.reference || null,
+    // optional annotated screenshot (JPEG data-URI) showing the exact problem,
+    // plus a short caption — rendered inline and click-to-zoom in the report.
+    screenshot: f.screenshot || null,
+    screenshotCaption: f.screenshotCaption || '',
+    // optional plain-English "where" shown above the raw selector
+    plainLocation: f.plainLocation || '',
   };
 }
 

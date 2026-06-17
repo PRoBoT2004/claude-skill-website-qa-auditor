@@ -1,5 +1,6 @@
 import { chromium, firefox, webkit } from 'playwright';
 import { makeFinding } from '../lib/contract.mjs';
+import { settlePage } from '../lib/page.mjs';
 import { truncate } from '../lib/util.mjs';
 
 // Browser compatibility: render the home page in Chromium, Firefox and WebKit
@@ -28,17 +29,15 @@ export async function run(ctx) {
       });
       page.on('pageerror', (e) => consoleErrors.push('Uncaught: ' + e.message.slice(0, 300)));
 
-      await page.goto(startUrl, { waitUntil: 'networkidle', timeout: config.timeout || 25000 }).catch(() =>
-        page.goto(startUrl, { waitUntil: 'domcontentloaded', timeout: config.timeout || 25000 })
-      );
-      await page.waitForTimeout(800);
+      await page.goto(startUrl, { waitUntil: 'domcontentloaded', timeout: config.timeout || 25000 });
+      await settlePage(page);
 
       const layout = await page.evaluate(() => ({
         height: document.documentElement.scrollHeight,
         width: document.documentElement.scrollWidth,
         bodyText: (document.body?.innerText || '').length,
       }));
-      const buf = await page.screenshot({ type: 'jpeg', quality: 55, fullPage: false });
+      const buf = await page.screenshot({ type: 'jpeg', quality: 70, fullPage: false });
 
       renders.push({
         name,

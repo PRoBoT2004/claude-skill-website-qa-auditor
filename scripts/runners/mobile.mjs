@@ -1,6 +1,7 @@
 import { chromium } from 'playwright';
 import * as cheerio from 'cheerio';
 import { makeFinding } from '../lib/contract.mjs';
+import { settlePage, annotateManyAndShoot } from '../lib/page.mjs';
 
 // Mobile-specific: viewport meta tag, touch-target sizes (>=44x44px), readable
 // body font size (>=16px) and tap-target spacing. Measured live at 375px.
@@ -50,11 +51,13 @@ export async function run(ctx) {
     const context = await browser.newContext({ viewport: { width: 375, height: 812 }, isMobile: true, deviceScaleFactor: 2 });
     const page = await context.newPage();
     await page.goto(startUrl, { waitUntil: 'domcontentloaded', timeout: config.timeout || 20000 });
-    await page.waitForTimeout(800);
+    await settlePage(page);
     measured = await page.evaluate(() => {
-      const out = { small: [], bodyFont: 0, tinyText: 0 };
+      const out = { small: [], boxes: [], bodyFont: 0, tinyText: 0 };
       const bodyStyle = getComputedStyle(document.body);
       out.bodyFont = parseFloat(bodyStyle.fontSize) || 0;
+      const sx = window.scrollX,
+        sy = window.scrollY;
       // touch targets
       const targets = document.querySelectorAll('a, button, input, select, textarea, [role="button"], [onclick]');
       let counted = 0;
@@ -64,9 +67,11 @@ export async function run(ctx) {
         const style = getComputedStyle(el);
         if (style.visibility === 'hidden' || style.display === 'none') continue;
         counted++;
-        if ((r.width < 44 || r.height < 44) && out.small.length < 12) {
+        if ((r.width < 44 || r.height < 44) && out.small.length < 20) {
           const label = (el.textContent || el.getAttribute('aria-label') || el.getAttribute('name') || el.tagName).trim().slice(0, 30);
           out.small.push({ label, w: Math.round(r.width), h: Math.round(r.height), tag: el.tagName.toLowerCase() });
+          // absolute page coords for the highlight overlay
+          out.boxes.push({ x: r.left + sx, y: r.top + sy, width: r.width, height: r.height });
         }
       }
       out.totalTargets = counted;
@@ -78,6 +83,9 @@ export async function run(ctx) {
       return out;
     });
     log('mobile', `bodyFont=${measured.bodyFont}px smallTargets=${measured.small.length}/${measured.totalTargets}`);
+    if (measured.boxes && measured.boxes.length) {
+      measured.tapShot = await annotateManyAndShoot(page, measured.boxes, { fullPage: true });
+    }
     await context.close().catch(() => {});
   } catch (err) {
     log('mobile', `live measure failed: ${err.message}`);
@@ -104,10 +112,12 @@ export async function run(ctx) {
         makeFinding({
           title: `${measured.small.length} tap target(s) smaller than 44×44px`,
           severity: measured.small.length > 5 ? 'MEDIUM' : 'LOW',
-          location: `${startUrl} @ 375px`,
-          description: `${measured.small.length} of ${measured.totalTargets} interactive elements are smaller than the 44×44px minimum recommended for finger taps, e.g. ${ex}. Small targets cause mis-taps on phones.`,
-          recommendation: 'Increase the size (or padding) of these buttons/links to at least 44×44px and ensure ~8px spacing between adjacent targets.',
+          location: `${startUrl} @ 375px (phone)`,
+          description: `${measured.small.length} of ${measured.totalTargets} buttons/links are smaller than the 44×44px minimum recommended for comfortable finger taps, e.g. ${ex}. Small or tightly-packed targets cause mis-taps on phones. Every flagged target is boxed in red in the screenshot.`,
+          recommendation: 'Increase the size (or tap padding) of these buttons/links to at least 44×44px and keep ~8px spacing between adjacent targets. Footer/social icons are common offenders.',
           reference: { label: 'Apple HIG: Touch targets', url: 'https://developer.apple.com/design/human-interface-guidelines/accessibility' },
+          screenshot: measured.tapShot || null,
+          screenshotCaption: 'Phone view (375px) — every red box is a tap target below the 44×44px minimum.',
         })
       );
     }

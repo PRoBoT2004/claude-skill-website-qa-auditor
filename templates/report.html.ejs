@@ -88,6 +88,22 @@
   .rec{background:var(--bg);border-radius:8px;padding:8px 12px;font-size:13.5px;margin-top:8px}
   .rec b{color:var(--ink)}
   .ref{font-size:12px;margin-top:6px}
+  figure.shot{margin:10px 0;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:#fff;max-width:560px}
+  figure.shot img{width:100%;display:block;cursor:zoom-in}
+  figure.shot figcaption{font-size:12px;color:var(--muted);padding:7px 10px;display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap}
+  .zoomhint{color:#1d4ed8;white-space:nowrap}
+  details.tech{margin-top:8px}
+  details.tech>summary{cursor:pointer;font-size:12px;color:var(--muted);padding:0;display:inline}
+  details.tech>summary::-webkit-details-marker{display:none}
+  details.tech>summary::before{content:'▸ ';}
+  details.tech[open]>summary::before{content:'▾ ';}
+  details.tech .mono{font-size:11.5px;color:var(--muted);word-break:break-all;margin-top:5px;background:var(--bg);padding:6px 8px;border-radius:6px}
+  img[data-zoom]{cursor:zoom-in}
+  /* lightbox */
+  #lb{display:none;position:fixed;inset:0;background:rgba(8,12,20,.9);z-index:99999;
+    align-items:center;justify-content:center;cursor:zoom-out;padding:24px}
+  #lb img{max-width:100%;max-height:100%;object-fit:contain;border-radius:8px;box-shadow:0 12px 40px rgba(0,0,0,.5)}
+  #lb .x{position:fixed;top:16px;right:22px;color:#fff;font-size:30px;font-weight:300;cursor:pointer;line-height:1}
 
   /* render compare */
   .renders{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:6px 0 14px}
@@ -151,7 +167,7 @@
   <div class="thumbs">
     <% for(const t of thumbs){ %>
     <div class="thumb">
-      <img src="<%= t.dataUri %>" alt="screenshot at <%= t.label %>">
+      <img src="<%= t.dataUri %>" alt="screenshot at <%= t.label %>" data-zoom>
       <div class="cap"><span><%= t.label %> · <%= t.device %></span><% if(t.hasHScroll){ %><span class="warn">⚠ h-scroll</span><% } %></div>
     </div>
     <% } %>
@@ -193,7 +209,7 @@
         <% if(c.id==='browsers' && c.renders){ %>
         <div class="renders">
           <% for(const r of c.renders){ if(r.dataUri){ %>
-          <figure><img src="<%= r.dataUri %>" alt="<%= r.name %>"><figcaption><%= r.name %><% if(r.layout){ %> · <%= r.layout.height %>px tall<% } %></figcaption></figure>
+          <figure><img src="<%= r.dataUri %>" alt="<%= r.name %>" data-zoom><figcaption><%= r.name %><% if(r.layout){ %> · <%= r.layout.height %>px tall<% } %></figcaption></figure>
           <% }} %>
         </div>
         <% } %>
@@ -201,9 +217,16 @@
         <% for(const f of c.findings){ %>
         <div class="finding" style="border-left-color:<%= SEV_COLOR[f.severity] %>;background:<%= SEV_BG[f.severity] %>">
           <h4><span class="sev" style="background:<%= SEV_COLOR[f.severity] %>"><%= f.severity %></span> <%- esc(f.title) %></h4>
-          <% if(f.location){ %><div class="loc mono">📍 <%- esc(f.location) %></div><% } %>
+          <% if(f.plainLocation){ %><div class="loc">📍 <b><%- esc(f.plainLocation) %></b></div><% } %>
           <p><%- nl2br(f.description) %></p>
+          <% if(f.screenshot){ %>
+          <figure class="shot">
+            <img src="<%= f.screenshot %>" alt="screenshot of the issue" data-zoom>
+            <% if(f.screenshotCaption){ %><figcaption><%- esc(f.screenshotCaption) %> <span class="zoomhint">🔍 click to enlarge</span></figcaption><% } %>
+          </figure>
+          <% } %>
           <% if(f.recommendation && f.severity!=='PASS'){ %><div class="rec"><b>Fix:</b> <%- nl2br(f.recommendation) %></div><% } %>
+          <% if(f.location){ %><details class="tech"><summary>Technical location</summary><div class="mono"><%- esc(f.location) %></div></details><% } %>
           <% if(f.reference){ %><div class="ref">📚 <a href="<%- esc(f.reference.url) %>" target="_blank" rel="noopener"><%- esc(f.reference.label) %></a></div><% } %>
         </div>
         <% } %>
@@ -212,7 +235,7 @@
         <h3 style="font-size:13px;margin:18px 0 0">All breakpoints</h3>
         <div class="allshots">
           <% for(const s of c.screenshots){ %>
-          <figure><img src="<%= s.dataUri %>" alt="<%= s.label %>"><figcaption><span><%= s.label %></span><% if(s.hasHScroll){ %><span style="color:var(--high)">⚠</span><% } %></figcaption></figure>
+          <figure><img src="<%= s.dataUri %>" alt="<%= s.label %>" data-zoom><figcaption><span><%= s.label %></span><% if(s.hasHScroll){ %><span style="color:var(--high)">⚠</span><% } %></figcaption></figure>
           <% } %>
         </div>
         <% } %>
@@ -235,5 +258,19 @@
   </footer>
 
 </div>
+
+<!-- click-to-zoom lightbox (any image with data-zoom, or finding screenshots) -->
+<div id="lb"><span class="x">&times;</span><img alt="enlarged screenshot"></div>
+<script>
+(function(){
+  var lb=document.getElementById('lb'), big=lb.querySelector('img');
+  document.addEventListener('click',function(e){
+    var img=e.target.closest('img[data-zoom]');
+    if(img){ big.src=img.src; lb.style.display='flex'; return; }
+    if(e.target.closest('#lb')){ lb.style.display='none'; big.src=''; }
+  });
+  document.addEventListener('keydown',function(e){ if(e.key==='Escape'){ lb.style.display='none'; big.src=''; } });
+})();
+</script>
 </body>
 </html>

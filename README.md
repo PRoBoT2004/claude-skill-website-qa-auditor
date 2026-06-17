@@ -25,6 +25,15 @@ It runs **real tools** (Playwright, Lighthouse, axe-core, Pa11y) — not an LLM 
 
 Every finding is rated **CRITICAL / HIGH / MEDIUM / LOW / PASS**, explained in plain English, and paired with a recommended fix and a reference link (WCAG / OWASP / Google / web.dev).
 
+### Visual-first reporting (v1.1)
+
+The point of a QA report is to *see* the problem, not decode a CSS selector. So:
+
+- **Annotated screenshots** — layout/overflow and small-tap-target findings include a screenshot with the exact element **boxed in red**, so a non-technical reader can see it and judge whether it's a real bug or intentional (off-canvas menu, full-bleed image, etc.).
+- **Click-to-zoom** — every screenshot opens full-size in a lightbox (Esc or click to close).
+- **Loader-aware capture** — the page is settled before screenshots (intro loaders dismissed, scroll-reveal/lazy content triggered), so animation-heavy sites don't produce black frames.
+- **Plain-English location first**; the raw CSS selector is tucked into a collapsible "Technical location."
+
 ---
 
 ## Quick start
