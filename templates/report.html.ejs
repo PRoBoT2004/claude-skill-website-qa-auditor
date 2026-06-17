@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>QA Report — <%- esc(meta.domain) %> — <%= meta.generatedAt.slice(0,10) %></title>
+<style>
+  :root{
+    --ink:#0f172a; --muted:#64748b; --line:#e2e8f0; --bg:#f8fafc; --card:#ffffff;
+    --crit:#b91c1c; --high:#c2410c; --med:#a16207; --low:#475569; --pass:#15803d;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    line-height:1.55;font-size:15px;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1080px;margin:0 auto;padding:32px 20px 80px}
+  a{color:#1d4ed8}
+  h1,h2,h3{line-height:1.25;margin:0}
+  .small{font-size:13px;color:var(--muted)}
+  .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+
+  /* header */
+  .head{display:flex;justify-content:space-between;align-items:flex-start;gap:24px;flex-wrap:wrap;margin-bottom:8px}
+  .head h1{font-size:24px;font-weight:700}
+  .head .url{color:var(--muted);font-size:14px;margin-top:4px;word-break:break-all}
+  .badge-brand{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600}
+
+  /* hero / exec summary */
+  .hero{display:grid;grid-template-columns:200px 1fr;gap:28px;background:var(--card);
+    border:1px solid var(--line);border-radius:16px;padding:28px;margin:18px 0 26px;align-items:center}
+  @media(max-width:680px){.hero{grid-template-columns:1fr}}
+  .gauge{width:160px;height:160px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+    margin:0 auto;position:relative;background:conic-gradient(<%= scoreColor(overall) %> <%= overall*3.6 %>deg, #e5e7eb 0deg)}
+  .gauge .inner{width:128px;height:128px;background:var(--card);border-radius:50%;
+    display:flex;flex-direction:column;align-items:center;justify-content:center}
+  .gauge .num{font-size:40px;font-weight:800;color:<%= scoreColor(overall) %>;line-height:1}
+  .gauge .lbl{font-size:12px;color:var(--muted);margin-top:2px}
+  .grade{display:inline-block;margin-top:10px;padding:3px 12px;border-radius:999px;font-weight:600;font-size:13px;
+    color:<%= scoreColor(overall) %>;background:<%= scoreColor(overall) %>1a;text-align:center}
+
+  .sevgrid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-top:6px}
+  @media(max-width:560px){.sevgrid{grid-template-columns:repeat(2,1fr)}}
+  .sevcard{border:1px solid var(--line);border-radius:12px;padding:12px 14px;background:#fff}
+  .sevcard .n{font-size:26px;font-weight:800;line-height:1}
+  .sevcard .t{font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.04em;margin-top:3px}
+  .verdict{font-size:15px;margin-bottom:14px}
+
+  /* category score chips */
+  .chips{display:flex;flex-wrap:wrap;gap:8px;margin:22px 0 8px}
+  .chip{display:flex;align-items:center;gap:8px;border:1px solid var(--line);border-radius:10px;
+    padding:8px 12px;background:#fff;font-size:13px;text-decoration:none;color:var(--ink)}
+  .chip .dot{width:10px;height:10px;border-radius:50%}
+  .chip b{font-weight:700}
+
+  /* thumbnails */
+  .thumbs{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:8px 0 4px}
+  @media(max-width:680px){.thumbs{grid-template-columns:repeat(2,1fr)}}
+  .thumb{border:1px solid var(--line);border-radius:10px;overflow:hidden;background:#fff}
+  .thumb img{width:100%;height:150px;object-fit:cover;object-position:top;display:block}
+  .thumb .cap{font-size:12px;color:var(--muted);padding:6px 8px;display:flex;justify-content:space-between}
+  .thumb .warn{color:var(--high);font-weight:600}
+
+  /* sections */
+  section.cat{background:var(--card);border:1px solid var(--line);border-radius:14px;margin:14px 0;overflow:hidden}
+  details>summary{list-style:none;cursor:pointer;padding:18px 22px;display:flex;align-items:center;gap:14px}
+  details>summary::-webkit-details-marker{display:none}
+  summary .ic{font-size:22px}
+  summary .ti{font-size:17px;font-weight:700;flex:1}
+  summary .sc{font-weight:800;font-size:16px}
+  summary .arrow{color:var(--muted);transition:transform .15s}
+  details[open] summary .arrow{transform:rotate(90deg)}
+  summary .mini{display:flex;gap:6px;flex-wrap:wrap}
+  .pill{font-size:11px;font-weight:700;padding:2px 8px;border-radius:999px;color:#fff}
+  .catbody{padding:0 22px 20px}
+  .summ{color:var(--muted);font-size:14px;margin:-4px 0 14px}
+
+  /* stats */
+  .stats{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 16px}
+  .stat{background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:6px 10px;font-size:12.5px}
+  .stat b{font-weight:700}
+
+  /* findings */
+  .finding{border:1px solid var(--line);border-left-width:4px;border-radius:10px;padding:14px 16px;margin:10px 0;background:#fff}
+  .finding h4{font-size:14.5px;margin:0 0 6px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+  .sev{font-size:11px;font-weight:800;letter-spacing:.04em;padding:2px 8px;border-radius:6px;color:#fff;white-space:nowrap}
+  .loc{font-size:12px;color:var(--muted);margin:2px 0 8px;word-break:break-all}
+  .finding p{margin:6px 0}
+  .rec{background:var(--bg);border-radius:8px;padding:8px 12px;font-size:13.5px;margin-top:8px}
+  .rec b{color:var(--ink)}
+  .ref{font-size:12px;margin-top:6px}
+
+  /* render compare */
+  .renders{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:6px 0 14px}
+  @media(max-width:680px){.renders{grid-template-columns:1fr}}
+  .renders figure{margin:0;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+  .renders img{width:100%;height:170px;object-fit:cover;object-position:top;display:block}
+  .renders figcaption{font-size:12px;padding:6px 8px;color:var(--muted);text-transform:capitalize}
+
+  .allshots{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:10px}
+  @media(max-width:680px){.allshots{grid-template-columns:repeat(2,1fr)}}
+  .allshots figure{margin:0;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+  .allshots img{width:100%;height:120px;object-fit:cover;object-position:top;display:block}
+  .allshots figcaption{font-size:11px;padding:4px 6px;color:var(--muted);display:flex;justify-content:space-between}
+
+  footer{margin-top:30px;padding-top:18px;border-top:1px solid var(--line);font-size:12.5px;color:var(--muted)}
+  .legend{display:flex;gap:14px;flex-wrap:wrap;margin:10px 0 0;font-size:12px}
+  .legend span{display:flex;align-items:center;gap:5px}
+  .legend i{width:10px;height:10px;border-radius:3px;display:inline-block}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="head">
+    <div>
+      <div class="badge-brand">Website QA Audit</div>
+      <h1><%- esc(meta.domain) %></h1>
+      <div class="url"><a href="<%- esc(meta.url) %>"><%- esc(meta.url) %></a></div>
+    </div>
+    <div class="small" style="text-align:right">
+      <div>Generated <%= meta.generatedHuman %></div>
+      <div><%= meta.pagesScanned %> pages scanned · <%= meta.durationSec %>s</div>
+    </div>
+  </div>
+
+  <!-- EXECUTIVE SUMMARY -->
+  <div class="hero">
+    <div>
+      <div class="gauge"><div class="inner">
+        <div class="num"><%= overall %></div><div class="lbl">/ 100</div>
+      </div></div>
+      <div style="text-align:center"><span class="grade"><%= grade.label %></span></div>
+    </div>
+    <div>
+      <p class="verdict">
+        <% if(counts.CRITICAL){ %>This site has <b style="color:var(--crit)"><%= counts.CRITICAL %> critical</b> issue(s) that should be fixed before launch.<% } else if(counts.HIGH){ %>No critical blockers, but <b style="color:var(--high)"><%= counts.HIGH %> high-severity</b> issue(s) need attention.<% } else if(overall>=90){ %>This site is in excellent shape — only minor polish remains.<% } else { %>No critical or high-severity blockers found; see medium/low items below.<% } %>
+      </p>
+      <div class="sevgrid">
+        <% for(const s of SEVERITY_ORDER){ %>
+        <div class="sevcard">
+          <div class="n" style="color:<%= SEV_COLOR[s] %>"><%= counts[s] %></div>
+          <div class="t" style="color:<%= SEV_COLOR[s] %>"><%= s %></div>
+        </div>
+        <% } %>
+      </div>
+    </div>
+  </div>
+
+  <% if(thumbs.length){ %>
+  <h3 style="font-size:14px;margin-bottom:6px">Responsive preview</h3>
+  <div class="thumbs">
+    <% for(const t of thumbs){ %>
+    <div class="thumb">
+      <img src="<%= t.dataUri %>" alt="screenshot at <%= t.label %>">
+      <div class="cap"><span><%= t.label %> · <%= t.device %></span><% if(t.hasHScroll){ %><span class="warn">⚠ h-scroll</span><% } %></div>
+    </div>
+    <% } %>
+  </div>
+  <% } %>
+
+  <!-- category scorecard -->
+  <div class="chips">
+    <% for(const c of categories){ %>
+    <a class="chip" href="#cat-<%= c.id %>">
+      <span class="dot" style="background:<%= scoreColor(c.score) %>"></span>
+      <span><%- esc(c.title) %></span><b style="color:<%= scoreColor(c.score) %>"><%= c.score %></b>
+    </a>
+    <% } %>
+  </div>
+
+  <!-- CATEGORY SECTIONS -->
+  <% for(const c of categories){ %>
+  <section class="cat" id="cat-<%= c.id %>">
+    <details <%= (c.counts.CRITICAL||c.counts.HIGH)?'open':'' %>>
+      <summary>
+        <span class="ic"><%= c.icon || '•' %></span>
+        <span class="ti"><%- esc(c.title) %></span>
+        <span class="mini">
+          <% for(const s of ['CRITICAL','HIGH','MEDIUM','LOW']){ if(c.counts[s]){ %><span class="pill" style="background:<%= SEV_COLOR[s] %>"><%= c.counts[s] %> <%= s.charAt(0) %></span><% }} %>
+        </span>
+        <span class="sc" style="color:<%= scoreColor(c.score) %>"><%= c.score %></span>
+        <span class="arrow">▶</span>
+      </summary>
+      <div class="catbody">
+        <div class="summ"><%- esc(c.summary) %><% if(c.error){ %> <em style="color:var(--high)">(<%- esc(c.error) %>)</em><% } %></div>
+
+        <% if(c.stats){ %>
+        <div class="stats">
+          <% for(const [k,v] of Object.entries(c.stats)){ %><span class="stat"><b><%- esc(k) %>:</b> <%- esc(v) %></span><% } %>
+        </div>
+        <% } %>
+
+        <% if(c.id==='browsers' && c.renders){ %>
+        <div class="renders">
+          <% for(const r of c.renders){ if(r.dataUri){ %>
+          <figure><img src="<%= r.dataUri %>" alt="<%= r.name %>"><figcaption><%= r.name %><% if(r.layout){ %> · <%= r.layout.height %>px tall<% } %></figcaption></figure>
+          <% }} %>
+        </div>
+        <% } %>
+
+        <% for(const f of c.findings){ %>
+        <div class="finding" style="border-left-color:<%= SEV_COLOR[f.severity] %>;background:<%= SEV_BG[f.severity] %>">
+          <h4><span class="sev" style="background:<%= SEV_COLOR[f.severity] %>"><%= f.severity %></span> <%- esc(f.title) %></h4>
+          <% if(f.location){ %><div class="loc mono">📍 <%- esc(f.location) %></div><% } %>
+          <p><%- nl2br(f.description) %></p>
+          <% if(f.recommendation && f.severity!=='PASS'){ %><div class="rec"><b>Fix:</b> <%- nl2br(f.recommendation) %></div><% } %>
+          <% if(f.reference){ %><div class="ref">📚 <a href="<%- esc(f.reference.url) %>" target="_blank" rel="noopener"><%- esc(f.reference.label) %></a></div><% } %>
+        </div>
+        <% } %>
+
+        <% if(c.id==='responsive' && c.screenshots){ %>
+        <h3 style="font-size:13px;margin:18px 0 0">All breakpoints</h3>
+        <div class="allshots">
+          <% for(const s of c.screenshots){ %>
+          <figure><img src="<%= s.dataUri %>" alt="<%= s.label %>"><figcaption><span><%= s.label %></span><% if(s.hasHScroll){ %><span style="color:var(--high)">⚠</span><% } %></figcaption></figure>
+          <% } %>
+        </div>
+        <% } %>
+      </div>
+    </details>
+  </section>
+  <% } %>
+
+  <footer>
+    <div class="legend">
+      <% for(const s of SEVERITY_ORDER){ %><span><i style="background:<%= SEV_COLOR[s] %>"></i><%= s %></span><% } %>
+    </div>
+    <p style="margin-top:12px">
+      Scan run <%= meta.generatedHuman %> · target <span class="mono"><%- esc(meta.url) %></span> ·
+      depth <%= meta.config.depth %>, up to <%= meta.config.maxPages %> pages · completed in <%= meta.durationSec %>s.<br>
+      Tools used: <%= meta.tools.join(' · ') %>.<br>
+      Overall score is a weighted average across <%= categories.length %> categories. This automated audit complements but does not replace manual QA, keyboard/screen-reader testing, and real-device checks.<br>
+      Generated by <a href="https://github.com/PRoBoT2004/claude-skill-website-qa-auditor">website-qa-auditor</a>.
+    </p>
+  </footer>
+
+</div>
+</body>
+</html>

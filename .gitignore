@@ -1,0 +1,7 @@
+node_modules/
+audits/
+*.log
+.DS_Store
+_shot.mjs
+preview-*.png
+*.tmp

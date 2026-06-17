@@ -1,0 +1,37 @@
+{
+  "name": "website-qa-auditor",
+  "version": "1.0.0",
+  "description": "Take any website URL and produce one polished, self-contained HTML QA report covering 10 categories — links, responsive, cross-browser, performance, accessibility, security, SEO, content, mobile, and tracking.",
+  "type": "module",
+  "bin": {
+    "website-qa-auditor": "scripts/audit.mjs"
+  },
+  "scripts": {
+    "audit": "node scripts/audit.mjs"
+  },
+  "keywords": [
+    "qa",
+    "audit",
+    "accessibility",
+    "lighthouse",
+    "playwright",
+    "seo",
+    "claude-skill"
+  ],
+  "license": "MIT",
+  "author": "PRoBoT2004",
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "@axe-core/playwright": "^4.11.3",
+    "cheerio": "^1.2.0",
+    "chrome-launcher": "^1.2.1",
+    "dictionary-en": "^4.0.0",
+    "ejs": "^6.0.1",
+    "lighthouse": "^13.4.0",
+    "nspell": "^2.1.5",
+    "pa11y": "^9.1.1",
+    "playwright": "^1.61.0"
+  }
+}
